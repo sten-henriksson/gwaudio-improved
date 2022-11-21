@@ -17,18 +17,18 @@ let test = async () => {
 
 
 
-  console.log(await prisma.post.findMany({
-    where: {
-      tag: {
-        none: {
-          name: "1"
-        },
-        every: {
-          name: "2"
-        },
-      },
-    },
-  }))
+  // console.log(await prisma.post.findMany({
+  //   where: {
+  //     tag: {
+  //       none: {
+  //         name: { in: ['Cockwarming', 'M4F'] },
+  //       },
+  //       some: {
+  //         name: { in: ['F4M', 'Incest'] },
+  //       },
+  //     },
+  //   },
+  // }))
 
 
 
@@ -39,7 +39,9 @@ console.log(test());
 
 
 
-app.post(`/post`, async (req, res) => {
+app.post(`/scrapedata`, async (req, res) => {
+  console.log("body", req.body);
+
   const { title, desc, tags, upvotes, name, postLink, links } = req.body
   try {
     const resp = await prisma.post.upsert({
@@ -47,13 +49,11 @@ app.post(`/post`, async (req, res) => {
       create: {
         title,
         desc,
-        upvotes,
+        upvotes: parseInt(upvotes),
         postLink: postLink,
         links,
         tag: {
-          connectOrCreate: tags.map((x: { name: string }) => {
-            return { create: { name: x.name }, where: { name: x.name } }
-          })
+          create: tags
         },
       },
       update: {
@@ -61,10 +61,30 @@ app.post(`/post`, async (req, res) => {
     })
     res.json(resp)
   } catch (error) {
+    console.log(error);
+
     res.status(400)
   }
 
   // res.json(result)
+})
+
+app.get('/users', async (req, res) => {
+  const { inctag, disctag } = req.body
+  const posts = await prisma.post.findMany({
+    where: {
+      tag: {
+        none: {
+          name: { in: disctag },
+        },
+        some: {
+          name: { in: inctag },
+        },
+      },
+    },
+  })
+
+  res.json(posts)
 })
 /*
 app.post(`/post`, async (req, res) => {
@@ -117,8 +137,8 @@ app.get(`/post/:id`, async (req, res) => {
   res.json(post)
 })
 */
-const server = app.listen(8099, () =>
+const server = app.listen(8999, () =>
   console.log(`
-🚀 Server ready at: http://localhost:8099
+🚀 Server ready at: http://localhost:8999
 ⭐️ See sample requests: http://pris.ly/e/ts/rest-express#3-using-the-rest-api`),
 )

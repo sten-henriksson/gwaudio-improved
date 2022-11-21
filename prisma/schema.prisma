@@ -27,7 +27,7 @@ model Post {
 
 model Tag {
   id     Int    @id @default(autoincrement())
-  name   String @unique
+  name   String //@unique
   postid Post?  @relation(fields: [tagid], references: [id])
   tagid  Int?
 }
