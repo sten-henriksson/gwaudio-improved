@@ -1,5 +1,5 @@
 # gwaudio-backend
 ## why?
-The ux of reddit.com/r/gonewildaudio is horrible and this project attempts to solve that.
+Gathers and saves data from reddit. A lot of things on smaller subreddits get lost in time this index them and serves a rest api
 ## how?
-Scrapes and gather links and data then process and gather all relevant socials and links.
+Webscrapers gets links and all relevant data from a post and its user 
