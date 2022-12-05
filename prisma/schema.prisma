@@ -14,15 +14,16 @@ model User {
 }
 
 model Post {
-  id       Int    @id @default(autoincrement())
-  title    String @db.VarChar(400)
-  desc     String @db.Text
-  postLink String @unique
+  id       Int      @id @default(autoincrement())
+  title    String   @db.VarChar(400)
+  desc     String   @db.Text
+  postLink String   @unique
   upvotes  Int
-  author   User?  @relation(fields: [authorId], references: [id])
+  author   User?    @relation(fields: [authorId], references: [id])
   authorId Int?
   links    Json
   tag      Tag[]
+  unixtime DateTime
 }
 
 model Tag {
