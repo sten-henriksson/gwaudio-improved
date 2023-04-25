@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: main
+    ports:
+      - 3306:3306
+    volumes:
+      - "./mysql_config/my.conf:/etc/mysql/conf.d/config-file.cnf"
+      - "./mysql_sqldata:/var/lib/mysql:rw"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8090:8080
+  elasticsearch:
+    container_name: tqd-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
+    #volumes:
+    #  - ./esdata:/usr/share/elasticsearch/data
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+    ports:
+      - 9300:9300
+      - 9200:9200
